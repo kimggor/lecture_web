@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/schedule")
-public class ScheduleServlet extends HttpServlet {
+public class ScheduleController extends HttpServlet {
 	
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -28,6 +28,7 @@ public class ScheduleServlet extends HttpServlet {
 		String dbName = enrollDbName;
 		ArrayList<Subject> list = new ArrayList<>();
 		list = service.loadSubjectList(dbName);	// 서비스구동(MODEL값)
+		
 		
 		
 		
