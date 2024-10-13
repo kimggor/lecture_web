@@ -65,8 +65,8 @@ public class WishlistController extends HttpServlet {
 		}
 		req.setAttribute("departmentsMap", departmentsMap);
 		
-		int currentCredits = wishlistDAO.getTotalCredits(studentId);
-		System.out.println("WishlistController - Current Credits: " + currentCredits); // 로그 추가
+		int currentCredits = wishlistDAO.getCurrentCredits(studentId);
+		System.out.println("WishlistController - Current Credits: " + currentCredits);
 		req.setAttribute("currentCredits", currentCredits);
 		
 		req.getRequestDispatcher("WEB-INF/views/wishlist/wishlist.jsp").forward(req, resp);

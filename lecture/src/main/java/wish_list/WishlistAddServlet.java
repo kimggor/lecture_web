@@ -59,7 +59,7 @@ public class WishlistAddServlet extends HttpServlet {
 			return;
 		}
 		
-		int currentCredits = wishlistDAO.getTotalCredits(studentId);
+		int currentCredits = wishlistDAO.getCurrentCredits(studentId);
 		
 		int result = wishlistDAO.addWish(studentId, courseId, classId);
 		

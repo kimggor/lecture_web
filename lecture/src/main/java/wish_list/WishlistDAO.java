@@ -40,9 +40,9 @@ public class WishlistDAO {
 	}
 	
 	// wishlist 총 학점
-	public int getTotalCredits(int studentId) {
+	public int getCurrentCredits(int studentId) {
 		
-		String sql = " select sum(credit) "
+		String sql = " select sum(co.credit) "
 				+ " from wishlist w "
 				+ " join course co "
 				+ " on w.course_id = co.course_id "

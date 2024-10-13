@@ -69,16 +69,16 @@ public class WishlistDeleteServlet extends HttpServlet {
 			if(updatedClass != null) {
                 jsonResponse.addProperty("enrolled", updatedClass.getEnrolled());
                 jsonResponse.addProperty("classId", updatedClass.getClassId());
-                jsonResponse.addProperty("currentCredits", wishlistDAO.getTotalCredits(studentId));
+                jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
             } else {
                 jsonResponse.addProperty("enrolled", "N/A");
                 jsonResponse.addProperty("classId", classId);
-                jsonResponse.addProperty("currentCredits", wishlistDAO.getTotalCredits(studentId));
+                jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
             }
             break;
 		case 1:
 			jsonResponse.addProperty("status", "unenroll_fail");
-			jsonResponse.addProperty("currentCredits", wishlistDAO.getTotalCredits(studentId));
+			jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
 			break;
 		}
 		
