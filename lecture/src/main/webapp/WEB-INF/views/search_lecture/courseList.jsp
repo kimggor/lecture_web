@@ -138,6 +138,21 @@ $(document).ready(function() {
             }
         });
     });
+    
+    // 탭 버튼 클릭 시 출력 내용 변경
+    $(".tab-button").click(function(){
+    	var selectedTab = $(this).data("tab");
+    	
+    	// 모든 탭 내용을 숨김
+    	$(".tab-content").hide();
+    	
+    	// 선택한 탭만 보임
+    	$('div[data-tab="' + selectedTab + '"]').show();
+    	
+    	// 버튼 상태 업데이트
+    	$(".tab-button").removeClass("active");
+    	$(this).addClass("active");
+    });
 
     // 강의 신청 버튼 클릭 시 AJAX 요청
     $(".btn-action").click(function() {
@@ -333,9 +348,15 @@ $(document).ready(function() {
     <div class="message">
         <%-- 메시지는 AJAX 작업 후에 클라이언트 컨셉에서 처리하는 것으로 여기서는 필요 없음 --%>
     </div>
+    
+    <div style="text-align: center; margin-bottom: 20px;">
+	    <button class="tab-button" data-tab="allClasses">전체 강의</button>
+	    <button class="tab-button" data-tab="cartList">장바구니</button>
+	    <button class="tab-button" data-tab="wishList">관심 목록</button>
+	</div>
 
     <!-- 전체 강의 목록 -->
-    <div id="courseTableContainer">
+    <div id="courseTableContainer" class="tab-content" data-tab="allClasses">
         <table id="courseTable">
             <thead>
                 <tr>
@@ -363,6 +384,144 @@ $(document).ready(function() {
                         for (Classes classEntity : allClasses) {
                             int courseId = classEntity.getCourseId();
                             int classId = classEntity.getClassId();
+                %>
+                <tr>
+                    <td>
+                        <% if (enrolledCourses.containsKey(courseId) && enrolledCourses.get(courseId) == classId) { %>
+                            <!-- 신청 완료된 강주의 신청 버튼 (비활성화) -->
+                            <button type="button" class="btn btn-action btn-disabled" data-course-id="<%=courseId%>" data-class-id="<%=classId%>" disabled>신청 완료</button>
+                        <% } else if (classEntity.getEnrolled() < classEntity.getCapacity()) { %>
+                            <!-- 신청 가능한 강주의 신청 버튼 -->
+                            <button type="button" class="btn btn-action" data-course-id="<%=courseId%>" data-class-id="<%=classId%>">신청</button>
+                        <% } else { %>
+                            <!-- 마감된 강주의 신청 버튼 (비활성화) -->
+                            <button type="button" class="btn btn-action btn-disabled" data-course-id="<%=courseId%>" data-class-id="<%=classId%>" disabled>마감</button>
+                        <% } %>
+                    </td>
+                    <td><%=courseId%></td>
+                    <td><%=classEntity.getCourseName()%></td>
+                    <td><%=classEntity.getDepartmentName()%></td>
+                    <td><%=classEntity.getClassification()%></td>
+                    <td><%=classEntity.getCourseSemester()%></td>
+                    <td><%=classEntity.getCredit()%></td>
+                    <td><%=classEntity.getProfessorName()%> 교수</td>
+                    <td><%=classEntity.getRoomNo()%></td>
+                    <td><%=classEntity.getDayOfWeek()%> <%=classEntity.getStartTime()%> ~ <%=classEntity.getEndTime()%></td>
+                    <td><%=classEntity.getCapacity()%></td>
+                    <td><%=classEntity.getEnrolled()%></td>
+                    <td><%=classEntity.getIsRetake() ? "예" : "아니오"%></td>
+                </tr>
+                <%
+                        }
+                    } else {
+                %>
+                <tr>
+                    <td colspan="13">조회된 강의가 없습니다.</td>
+                </tr>
+                <%
+                    }
+                %>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 장바구니 강의 목록 -->
+    <div id="cartTableContainer" class="tab-content" data-tab="cartList">
+        <table id="cartTable">
+            <thead>
+                <tr>
+                    <th>신청</th>
+                    <th>Course ID</th>
+                    <th>강의명</th>
+                    <th>학과 이름</th>
+                    <th>분류</th>
+                    <th>학기</th>
+                    <th>학점</th>
+                    <th>교수명</th>
+                    <th>강의실</th>
+                    <th>시간</th>
+                    <th>정원</th>
+                    <th>신청 인원</th>
+                    <th>재수강 여부</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    List<Classes> cartList = (List<Classes>) request.getAttribute("cartList");
+
+                    if (cartList != null && !cartList.isEmpty()) {
+                        for (Classes classEntity : cartList) {
+                            int courseId = classEntity.getCourseId();
+                            int classId = classEntity.getClassId();
+                %>
+                <tr>
+                    <td>
+                        <% if (enrolledCourses.containsKey(courseId) && enrolledCourses.get(courseId) == classId) { %>
+                            <!-- 신청 완료된 강주의 신청 버튼 (비활성화) -->
+                            <button type="button" class="btn btn-action btn-disabled" data-course-id="<%=courseId%>" data-class-id="<%=classId%>" disabled>신청 완료</button>
+                        <% } else if (classEntity.getEnrolled() < classEntity.getCapacity()) { %>
+                            <!-- 신청 가능한 강주의 신청 버튼 -->
+                            <button type="button" class="btn btn-action" data-course-id="<%=courseId%>" data-class-id="<%=classId%>">신청</button>
+                        <% } else { %>
+                            <!-- 마감된 강주의 신청 버튼 (비활성화) -->
+                            <button type="button" class="btn btn-action btn-disabled" data-course-id="<%=courseId%>" data-class-id="<%=classId%>" disabled>마감</button>
+                        <% } %>
+                    </td>
+                    <td><%=courseId%></td>
+                    <td><%=classEntity.getCourseName()%></td>
+                    <td><%=classEntity.getDepartmentName()%></td>
+                    <td><%=classEntity.getClassification()%></td>
+                    <td><%=classEntity.getCourseSemester()%></td>
+                    <td><%=classEntity.getCredit()%></td>
+                    <td><%=classEntity.getProfessorName()%> 교수</td>
+                    <td><%=classEntity.getRoomNo()%></td>
+                    <td><%=classEntity.getDayOfWeek()%> <%=classEntity.getStartTime()%> ~ <%=classEntity.getEndTime()%></td>
+                    <td><%=classEntity.getCapacity()%></td>
+                    <td><%=classEntity.getEnrolled()%></td>
+                    <td><%=classEntity.getIsRetake() ? "예" : "아니오"%></td>
+                </tr>
+                <%
+                        }
+                    } else {
+                %>
+                <tr>
+                    <td colspan="13">조회된 강의가 없습니다.</td>
+                </tr>
+                <%
+                    }
+                %>
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- 관심 강의 목록 -->
+    <div id="wishTableContainer" class="tab-content" data-tab="wishList">
+        <table id="wishTable">
+            <thead>
+                <tr>
+                    <th>신청</th>
+                    <th>Course ID</th>
+                    <th>강의명</th>
+                    <th>학과 이름</th>
+                    <th>분류</th>
+                    <th>학기</th>
+                    <th>학점</th>
+                    <th>교수명</th>
+                    <th>강의실</th>
+                    <th>시간</th>
+                    <th>정원</th>
+                    <th>신청 인원</th>
+                    <th>재수강 여부</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%
+                    List<Classes> wishList = (List<Classes>) request.getAttribute("wishList");
+
+                    if (wishList != null && !wishList.isEmpty()) {
+                        for (Classes classEntity : wishList) {
+                            int classId = classEntity.getClassId();
+                            int courseId = classEntity.getCourseId();
                 %>
                 <tr>
                     <td>
