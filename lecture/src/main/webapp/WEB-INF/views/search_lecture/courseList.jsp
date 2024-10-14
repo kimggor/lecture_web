@@ -203,8 +203,10 @@ $(document).ready(function() {
                     alert('해당 강주는 마감되었습니다.');
                 } else if(response.status === 'exceed_max_credit') {
                     alert('최대 수강 가능 학점인 18학점을 초과할 수 없습니다.');
-                } else {
-                    alert('강의 신청에 실패했습니다. 다시 시도해주세요.');
+                } else if(response.status === 'time_conflict') {
+                	alert("강의 시간이 중복되어 신청할 수 없습니다.");
+                } else{
+                	alert('강의 신청에 실패했습니다. 다시 시도해주세요.');
                 }
             },
             error: function(xhr, status, error) {

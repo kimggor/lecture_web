@@ -363,7 +363,7 @@ if (allClasses != null && !allClasses.isEmpty()) {
 <td><%= classEntity.getClassification() %></td>
 <td><%= classEntity.getCourseSemester() %></td>
 <td><%= classEntity.getCredit() %></td>
-<td><%= classEntity.getProfessorName() %></td>
+<td><%= classEntity.getProfessorName() %> 교수</td>
 <td><%= classEntity.getRoomNo() %></td>
 <td>
 <%
@@ -441,7 +441,7 @@ if (wishList != null && !wishList.isEmpty()) {
 <td><%= wishClass.getClassification() %></td>
 <td><%= wishClass.getCourseSemester() %></td>
 <td><%= wishClass.getCredit() %></td>
-<td><%= wishClass.getProfessorName() %></td>
+<td><%= wishClass.getProfessorName() %> 교수</td>
 <td><%= wishClass.getRoomNo() %></td>
 <td>
 <%
