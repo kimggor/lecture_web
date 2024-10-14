@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Map;
 
 import com.google.gson.JsonObject;
 
@@ -79,6 +80,29 @@ public class EnrollAjaxServlet extends HttpServlet {
             out.flush();
             return;
         }
+        
+		// 시간 중복 확인
+		// 학생이 등록한 모든 과목 조회
+		Map<Integer, Integer> enrolledCourses =  enrollmentDAO.getEnrolledCourses(studentId);
+		if(enrolledCourses != null && !enrolledCourses.isEmpty()) {
+			for(Map.Entry<Integer, Integer> entry : enrolledCourses.entrySet()) {
+				int enrolledClassId = entry.getValue();
+				Classes enrolledClass = classDAO.getClassById(studentId, enrolledClassId);
+				if(selectedClass.getDayOfWeek().equals(enrolledClass.getDayOfWeek())) {
+					if(!(Integer.parseInt(selectedClass.getEndTime()) < Integer.parseInt(enrolledClass.getStartTime()) || Integer.parseInt(selectedClass.getStartTime()) > Integer.parseInt(enrolledClass.getEndTime()))) {
+						JsonObject jsonResponse = new JsonObject();
+						jsonResponse.addProperty("status", "time_conflict");
+						jsonResponse.addProperty("currentCredits", currentCredits);
+						response.setContentType("application/json; charset=UTF-8");
+						response.setCharacterEncoding("UTF-8");
+						PrintWriter out = response.getWriter();
+						out.print(jsonResponse.toString());
+						out.flush();
+						return;
+					}
+				}
+			}
+		}
 
         // 강의 신청 처리
         int result = enrollmentDAO.enrollCourse(studentId, courseId, classId);
