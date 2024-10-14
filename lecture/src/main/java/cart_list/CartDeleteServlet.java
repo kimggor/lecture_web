@@ -1,7 +1,8 @@
-package wish_list;
+package cart_list;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Currency;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -15,16 +16,16 @@ import com.google.gson.JsonObject;
 import Model.Classes;
 import lecture_list.ClassDAO;
 
-@WebServlet("/wishlist/delete")
-public class WishlistDeleteServlet extends HttpServlet {
+@WebServlet("/cart/delete")
+public class CartDeleteServlet extends HttpServlet {
 	
-	private WishlistDAO wishlistDAO;
+	private CartDAO cartDAO;
 	private ClassDAO classDAO;
 	
 	@Override
 	public void init() throws ServletException {
 		
-		wishlistDAO = new WishlistDAO();
+		cartDAO = new CartDAO();
 		classDAO = new ClassDAO();
 		
 	}
@@ -58,7 +59,7 @@ public class WishlistDeleteServlet extends HttpServlet {
 			return;
 		}
 		
-		int result = wishlistDAO.deleteWish(studentId, courseId, classId);
+		int result = cartDAO.deleteCart(studentId, courseId, classId);
 		
 		JsonObject jsonResponse = new JsonObject();
 		switch(result) {
@@ -66,26 +67,30 @@ public class WishlistDeleteServlet extends HttpServlet {
 			jsonResponse.addProperty("status", "unenroll_success");
 			
 			Classes updatedClass = classDAO.getClassById(studentId, classId);
-			if(updatedClass != null) {
+            if(updatedClass != null) {
                 jsonResponse.addProperty("enrolled", updatedClass.getEnrolled());
                 jsonResponse.addProperty("classId", updatedClass.getClassId());
-                jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
+                jsonResponse.addProperty("currentCredits", cartDAO.getCurrentCredits(studentId));
             } else {
                 jsonResponse.addProperty("enrolled", "N/A");
                 jsonResponse.addProperty("classId", classId);
-                jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
+                jsonResponse.addProperty("currentCredits", cartDAO.getCurrentCredits(studentId));
             }
             break;
 		case 1:
-			jsonResponse.addProperty("status", "unenroll_fail");
-			jsonResponse.addProperty("currentCredits", wishlistDAO.getCurrentCredits(studentId));
-			break;
+            jsonResponse.addProperty("status", "unenroll_fail");
+            jsonResponse.addProperty("currentCredits", cartDAO.getCurrentCredits(studentId));
+            break;
+        default:
+        	jsonResponse.addProperty("status", "unenroll_fail");
+        	jsonResponse.addProperty("currentCredits", cartDAO.getCurrentCredits(studentId));
+        	break;
 		}
 		
 		resp.setContentType("application/json; charset=UTF-8");
 		resp.setCharacterEncoding("UTF-8");
 		PrintWriter out = resp.getWriter();
-		System.out.println("Wishlist Unenroll Response: " + jsonResponse.toString());
+		System.out.println("Cart Unenroll Response: " + jsonResponse.toString());
 		out.print(jsonResponse.toString());
 		out.flush();
 		

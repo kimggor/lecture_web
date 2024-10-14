@@ -42,7 +42,6 @@ public class CartDAO {
     // 반환 값:
     // 0: 성공
     // 1: 이미 신청한 강좌
-    // 2: 마감된 강좌
     // -1: 기타 오류
 	public int addCart(int studentId, int courseId, int classId) {
 		
