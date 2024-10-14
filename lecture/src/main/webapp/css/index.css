@@ -1,0 +1,293 @@
+@charset "UTF-8";
+
+*{
+	height: auto;
+	margin: 0;
+    padding: 0;
+    font-size: 13px;
+    color: #333;
+    line-height: 1.4;
+    box-sizing: border-box;
+    outline: 0 none;
+}
+
+
+.index-header{
+    width: 100%;
+    min-height: 94px;
+    background-color: #760023;
+}
+
+.header-logo{
+	min-height: 94px;
+	position: relative;
+    width: 1200px;
+    margin: 0 auto;
+    background: url(/lecture/img/logo.png) no-repeat 0 50%;
+}
+
+.wrap-login {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    padding-top: 75px;
+    border-bottom: 1px solid #d9d9d9;
+    background: url(/lecture/img/img-login.jpg) no-repeat center 0;
+    min-height: 530px; 
+}
+
+.wrap-login-wrap{
+	position: relative;
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.login-box{
+    position: relative;
+    float: right;
+    width: 400px;
+    padding: 145px 55px 0;
+    background: #fff url(/lecture/img/bg-login.png) no-repeat center 55px;
+    min-height: 360px;
+}
+
+.wrap-lang{
+	margin-bottom: 30px;
+    text-align: center;
+    min-height: 20px;
+    width: 290px;
+}
+
+input[type="radio"], input[type="checkbox"] {
+    background: transparent;
+    vertical-align: text-top;
+    display: none;
+}
+
+input[type="radio"]+label, input[type="checkbox"]+label {
+    display: inline-block;
+    position: relative;
+    min-height: 16px;
+    margin: 2px 0;
+    padding: 0 15px 0 22px;
+    line-height: 16px;
+    transition: all .2s;
+}
+
+input[type="radio"]+label:before {
+    content: "";
+    border-radius: 10px;
+}
+
+input[type="radio"]+label:before, input[type="checkbox"]+label:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 16px;
+    min-height: 16px;
+    background: #fff;
+    border: 1px solid #ccc;
+    transition: all .2s;
+}
+
+input[type="radio"]:checked+label:after {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 8px;
+    min-height: 8px;
+    border-radius: 1rem;
+    background: #a20131;
+    transition: all .2s;
+}
+
+input[type="radio"]:checked+label:after, input[type="checkbox"]:checked+label:after {
+    content: "";
+}
+
+.input-id{
+	background: url(/lecture/img/icon-id.png) no-repeat 10px center;
+}
+
+.input-pw{
+	background: url(/lecture/img/icon-pw.png) no-repeat 11px center;
+}
+
+.input-id, .input-pw{
+	float: left;
+    width: 195px;
+    min-height: 40px;
+    line-height: 40px;
+    margin-bottom: 10px;
+    padding-left: 36px;
+    font-size: 12px;
+    border: 1px solid rgb(204, 204, 204);
+   	letter-spacing: -0.5px;
+    appearance: none;
+}
+
+.btn-login{
+	width: 85px;
+    min-height: 90px;
+    margin-left: 10px;
+    background-color: rgb(162, 1, 49);
+    border-radius: 6px;
+    border: 0px;
+    font-size: 17px;
+    font-weight: bold;
+    color: rgb(255, 255, 255);
+    text-align: center;
+}
+
+.btn-login small{
+    color: rgba(255, 255, 255, 0.5);
+}
+
+
+
+.wrap-contents{
+	width: 100%;
+    padding: 65px 0 80px;
+    min-height: 650px;
+}
+
+.wrap-contents-wrap{
+	position: relative;
+    width: 1200px;
+    margin: 0px auto;
+}
+
+.wrap-contents-wrap h1{
+	margin-bottom: 5px;
+	font-size: 26px;
+    font-weight: 500;
+    letter-spacing: -2px;
+    word-spacing: -1px;
+    display: inline-block;
+    width: 100%;
+    padding-left: 2px;
+    color: #0d0d0d;
+    min-height: 36.391px;
+}
+
+.wrap-contents-wrap h1 small{
+	margin-left: 10px;
+    font-size: 16px;
+    color: #666;
+    letter-spacing: 0;
+    word-spacing: 0;
+}
+
+.info-box{
+	    margin-top: 10px;
+	padding: 30px;
+	position: relative;
+    border: 1px solid #dedede;
+    background: #fff;
+}
+
+
+
+ul {
+    list-style: none;
+    margin: 0;
+    padding-left: 0; 
+}
+
+li{
+	min-height: 22px;
+	line-height: 22px;
+	display: inline-block;
+}
+
+.list-bullet > li {
+    position: relative;
+    padding-left: 12px; 
+    background: url(/lecture/img/bullet.png) no-repeat 0 7px;
+    font-size: 14px;
+    	margin: 0 0 10px;
+}
+
+.list-num {
+    margin-top: 0 0 0 30px;
+}
+
+.list-num > li {
+    font-size: 14px;
+     list-style-type: decimal;
+   
+}
+
+.list-dot > li {
+    position: relative;
+     padding: 3px 0 3px 10px;
+     line-height: 13px;
+ 	min-height: 24.888px;
+}
+
+.list-dot > li:before {
+    content: "";
+    display: inline-block;
+    position: absolute;
+    top: 6px;
+    left: 0;
+    width: 4px;
+    min-height: 4px;
+    border-radius: 50%;
+    background: #876243;
+}
+
+
+a{
+	    color: #528ecc;
+    text-decoration: none;
+    outline: 0 none;
+        display: inline-block;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+.highlight {
+    color: #bf0039;
+}
+
+b, strong{
+	    font-family: inherit;
+    font-size: inherit;
+    font-weight: bold;
+}
+
+ins{
+	font-weight: bold;
+	color: #bf0039;
+}
+
+.txt-blue{
+	    color: rgb(0, 133, 202) !important;
+}
+
+span{
+	    display: inline-block;
+    font-size: inherit;
+    font-weight: inherit;
+}
+
+
+
+
+.index-footer{
+	    width: 100%;
+    min-height: 120px;
+    padding-top: 30px;
+    background-color: #262626;
+}
+
+.index-footer div{
+	    position: relative;
+    width: 1200px;
+    margin: 0 auto;
+    font-size: 12px;
+    color: #b9b9b9;
+    line-height: 18px;
+} 
