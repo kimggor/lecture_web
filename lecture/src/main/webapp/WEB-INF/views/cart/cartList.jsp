@@ -8,13 +8,138 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>장바구니</title>
+<style type="text/css">
+
+
+/* 기본 버튼 스타일 */
+.btn {
+    padding: 5px 10px;
+    cursor: pointer;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+/* 공통 버튼 액션 클래스 */
+.btn-action {
+    background-color: #007BFF; /* 파란색, 필요에 따라 변경 가능 */
+}
+
+/* 비활성화된 버튼 스타일 */
+.btn-disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
+
+/* 삭제 버튼 스타일 */
+.btn-delete {
+    background-color: #FF5733; /* 번개색 */
+}
+
+/* 메시지 스타일 */
+.message {
+    text-align: center;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+.message.success {
+    color: green;
+}
+
+.message.error {
+    color: red;
+}
+
+/* 로그아웃 링크 스타일 */
+.logout a {
+    text-decoration: none;
+    color: #007BFF;
+}
+
+.logout a:hover {
+    text-decoration: underline;
+}
+
+/* 테이블 스타일 */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 40px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+/* 사이드바 스타일 */
+/* #sidebar {
+    width: 200px;
+    float: left;
+    border: 1px solid #ddd;
+    padding: 10px;
+    box-sizing: border-box;
+}
+ */
+/* 콘텐츠 영역 스타일 */
+#content {
+    flex-grow: 1;
+    padding: 0 20px 20px 20px;
+    margin-left: 220px;
+}
+
+/* 강의 목록 테이블을 스크롤리로 만들기 위한 스타일 */
+#courseTableContainer {
+    max-height: 300px; /* 스크롤 목록의 최대 높이 설정 */
+    overflow: auto; /* 스크롤로의 평이 발생할 경우 실행 */
+    border: 1px solid #ddd;
+    margin-bottom: 40px;
+}
+</style>
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/sidebar.css">
+<link rel="stylesheet" type="text/css" href="<%=request.getContextPath()%>/css/header.css"> <!-- CSS 파일 분리 권장 -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
 <script>
 
 $(document).ready(function(){
 	
-	$("#classTable").on("click", ".btn-action", function(){
+    // 필터링 버튼 클릭 시
+    $("#filterButton").click(function() {
+        var selectedDepartment = $("#departmentFilter").val();
+        var selectedClassification = $("#classificationFilter").val();
+
+        // "강의 목록" 테이블의 행만 필터링
+        $("#courseTable tbody tr").each(function() {
+            var deptCell = $(this).find("td:nth-child(4)").text(); // 4번째 컬럼: 학과 이름
+            var classCell = $(this).find("td:nth-child(5)").text(); // 5번째 컬럼: 분류
+
+            var showRow = true;
+
+            if (selectedDepartment && deptCell !== selectedDepartment) {
+                showRow = false;
+            }
+
+            if (selectedClassification && classCell !== selectedClassification) {
+                showRow = false;
+            }
+
+            if (showRow) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+	
+	$("#courseTable").on("click", ".btn-action", function(){
 		var courseId = $(this).data("course-id");
 		var classId = $(this).data("class-id");
 		var button = $(this);
@@ -117,24 +242,22 @@ $(document).ready(function(){
 });
 
 </script>
-<style>
-table{
-border: 1px solid black;
-border-collapse: collapse;
-text-align: center;
-}
-th{
-border: 1px solid black;
-}
-td{
-border: 1px solid black;
-}
-</style>
 </head>
 <body>
 
-<h1>강의 목록</h1>
-<div>
+	<div id="sidebar">
+        <%@ include file="/WEB-INF/views/sidebar.jsp" %>
+    </div>
+    <div id="content">
+  
+	<div>
+		<%@ include file="/WEB-INF/views/header.jsp" %>
+	</div>
+
+    <h1 style="text-align: center;">강의 목록</h1>
+
+<!-- 현재 수강 학점 표시 -->
+<div style="text-align: center; margin-bottom: 20px;">
 <span id="currentCredits">
 현재 등록 학점: 
 <%
@@ -149,8 +272,47 @@ if (credits != null){
 </span>
 </div>
 
-<div>
-<table id="classTable">
+    <!-- 필터링 세션 추가 -->
+    <div style="text-align: center; margin-bottom: 20px;">
+        <form id="filterForm">
+            <!-- 학과 이름 필터 -->
+            <label for="departmentFilter">학과:</label>
+            <select id="departmentFilter" name="department">
+                <option value="">전체</option>
+                <%
+                    Map<Integer, String> departmentsMap = (Map<Integer, String>) request.getAttribute("departmentsMap");
+                    if (departmentsMap != null) {
+                        for (Map.Entry<Integer, String> entry : departmentsMap.entrySet()) {
+                %>
+                    <option value="<%= entry.getValue() %>"><%= entry.getValue() %></option>
+                <%
+                        }
+                    }
+                %>
+            </select>
+
+            <!-- 분류 필터 -->
+            <label for="classificationFilter">분류:</label>
+            <select id="classificationFilter" name="classification">
+                <option value="">전체</option>
+                <option value="전공필수">전공필수</option>
+                <option value="전공선택">전공선택</option>
+                <option value="교양">교양</option>
+            </select>
+
+            <!-- 필터링 버튼 -->
+            <button type="button" id="filterButton">필터링</button>
+        </form>
+    </div>
+    
+    <!-- 알림 메시지 표시 -->
+    <div class="message">
+        <%-- 메시지는 AJAX 작업 후에 클라이언트 컨셉에서 처리하는 것으로 여기서는 필요 없음 --%>
+    </div>
+
+<!-- 전체 강의 목록 -->
+<div id="courseTableContainer">
+<table id="courseTable">
 
 <thead>
 <tr>
@@ -213,7 +375,7 @@ String endTime = classEntity.getEndTime();
 } else {
 %>
 <tr>
-<td>조회된 강의가 없습니다.</td>
+<td colspan="13">조회된 강의가 없습니다.</td>
 </tr>
 <%
 }
@@ -223,7 +385,8 @@ String endTime = classEntity.getEndTime();
 </table>
 </div>
 
-<h2>장바구니</h2>
+<!-- 신청된 강의를 별도로 표시 -->
+<h2 style="text-align: center; margin-top: 40px;">장바구니</h2>
 <table id="cartListTable">
 
 <thead>
@@ -291,7 +454,7 @@ String endTime = cartClass.getEndTime();
 } else {
 %>
 <tr>
-<td>등록된 강의가 없습니다.</td>
+<td colspan="13">등록된 강의가 없습니다.</td>
 </tr>
 <%
 }

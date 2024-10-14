@@ -67,6 +67,7 @@ public class CartAddServlet extends HttpServlet {
 			return;
 		}
 		int courseCredits = selectedClass.getCredit();
+		System.out.println(courseCredits);
 		
 		if(currentCredits + courseCredits > 18) {
 			JsonObject jsonResponse = new JsonObject();

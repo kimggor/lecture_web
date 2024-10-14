@@ -185,11 +185,11 @@ public class CartDAO {
 	
 	public int getCurrentCredits(int studentId) {
 		
-		String sql = " select count(co.credit) "
+		String sql = " select sum(co.credit) "
 				+ " from course_cart cc "
 				+ " join course co "
 				+ " on cc.course_id = co.course_id "
-				+ " where student_id = ? ";
+				+ " where cc.student_id = ? ";
 		
 		int totalCredits = 0;
 		
