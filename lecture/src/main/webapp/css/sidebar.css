@@ -1,27 +1,106 @@
 @charset "UTF-8";
 
-.wrapper {
-    width: 200px;
-    background-color: #E2E2E2;
-    height: 100vh;
-    padding: 15px;
+* {
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
-    position:fixed;
-}
-.wrapper ul {
     list-style: none;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    display: flex; /* 플렉스 컨테이너로 설정 */
+}
+
+.wrapper {
+    width: 250px;
+    background-color: #e2e2e2;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+    overflow-y: auto;
+    z-index: 1000; /* 콘텐츠 위에 표시되도록 z-index 설정 */
+}
+
+.wrapper.hide {
+    transform: translateX(-250px);
+}
+
+.menu-control {
+    position: fixed;
+    top: 20px;
+    left: 250px; /* 사이드바의 너비와 동일하게 설정 */
+    z-index: 1001; /* 사이드바보다 위에 표시되도록 z-index 설정 */
+    background-color: #a20131;
+    color: white;
+    border: none;
+    padding: 10px 10px;
+    cursor: pointer;
+    font-size: 18px;
+    border-radius: 0 5px 5px 0;
+    transition: left 0.3s ease;
+}
+
+.wrapper.hide + .menu-control {
+    left: 0; /* 사이드바가 숨겨지면 버튼을 왼쪽으로 이동 */
+}
+
+.nav {
     padding: 0;
 }
 
-.wrapper ul li {
-    margin: 10px 0;
+.nav-header {
+    display: flex;
+    background-color: #e0e0e0;
+    color: white;
+    margin-bottom: 0;
+    padding: 20px 20px 5px;
 }
 
-.wrapper ul li a {
-    text-decoration: none;
-    color: #333;
+.nav-header span {
+    flex: 1;
+    cursor: pointer;
+    padding: 20px 0;
+    text-align: center;
+    background-color: #b3b3b3;
 }
 
-.wrapper ul li a:hover {
-    color: #007BFF;
+.nav-header span.is-active {
+    color: white;
+    background: #a20131;
 }
+
+.nav-main {
+    padding: 0 20px 20px;
+}
+
+.nav-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.nav-menu li {
+    border-bottom: 1px solid #ccc;
+}
+
+.nav-menu li span {
+    display: block;
+    padding: 15px 0;
+    cursor: pointer;
+    border-radius: 0;
+    transition: background 0.3s;
+}
+
+.nav-menu li span:hover {
+    background: #f5f5f5;
+}
+
+.nav-menu li:last-child {
+    border-bottom: none;
+}
+
+/* 상위 메뉴 항목을 볼드체로 설정

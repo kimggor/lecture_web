@@ -1,56 +1,57 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8"%>
+<%@ page import="time_table.Subject"%>
+<%@ page import="java.util.ArrayList"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
-<!-- <c:set var="path" value="${pageContext.request.contextPath}"/> -->
-<!-- 
-<link href="/WEB-INF/views/timetable/css/schedule.css" rel="stylesheet" type="text/css">
- -->
 <link href="/lecture/css/schedule.css" rel="stylesheet" type="text/css">
 </head>
 
 <body>
-    <div>
-        <table>
-            <thead>
-                <tr>
-                    <td class="period">교시</td>
-                    <td class="week">월</td>
-                    <td class="week">화</td>
-                    <td class="week">수</td>
-                    <td class="week">목</td>
-                    <td class="week">금</td>
-                    <td class="week">토</td>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td class="period">1</td>
-                    <td></td>
-                    <td>
-                        <p>PHIL154 - 04</p>
-                        <p>동양철학입문</p>
-                        <p>교양관210</p>
-                        <p>김동진</p>
-                    </td>
-                    <td></td>
-                    <td>
-                        <p>PHIL154 - 04</p>
-                        <p>동양철학입문</p>
-                        <p>교양관210</p>
-                        <p>김동진</p>
-                    </td>
-                    <td></td>
-                    <td style="color:red">
-                    	<p>Class.course_id > Course.classification</p>
-                    	<p>Class.course_id > Course.course_name</p>
-                    	<p>Class.room_no</p>
-                    	<p>Class.professor_id > Professor.name</p>
-                    </td>
-                </tr>
+	<%
+	Subject[][] subjects = (Subject[][]) request.getAttribute("timeTable");
+	int day = (int) request.getAttribute("day");
+	int period = (int) request.getAttribute("period");
+	%>
+	<div>
+		<table>
+			<thead>
+				<tr>
+					<td class="period">교시</td>
+					<td class="week">월</td>
+					<td class="week">화</td>
+					<td class="week">수</td>
+					<td class="week">목</td>
+					<td class="week">금</td>
+					<td class="week">토</td>
+				</tr>
+			</thead>
+			<tbody>
+
+				<% for (int j = 0; j < period; j++) { %>
+				<tr>
+					<td class="period"><%= j + 1 %></td>
+					<% for (int i = 0; i < day; i++) { %>
+					<% if (subjects[i][j] == null) { %>
+					<td style="background-color: pink">
+						<%
+						continue;
+						} else {
+						%>
+						<td>
+							<p><%=subjects[i][j].getClassfication()%></p>
+							<p><%=subjects[i][j].getCourseName()%></p>
+							<p><%=subjects[i][j].getRoomNumber()%></p>
+							<p><%=subjects[i][j].getProffessorName()%></p> 
+						<% } %>
+					</td>
+					<% } %>
+				</tr>
+				<% } %>
+<!-- 
                 <tr>
                     <td class="period">2</td>
                     <td>
@@ -151,9 +152,10 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                </tr> 
+-->
+			</tbody>
+		</table>
+	</div>
 </body>
 </html>

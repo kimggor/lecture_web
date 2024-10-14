@@ -2,14 +2,14 @@ body {
     /* font-family: Arial, sans-serif; */
     background-color: #f4f4f4;
     margin: 0;
-    padding: 20px;
+    padding: 10px;
 }
 
 .container {
-    max-width: 500px;
+/*     max-width: 500px; */
     margin: auto;
     background: white;
-    padding: 10px;
+    padding: 5px;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
@@ -46,23 +46,20 @@ tbody td {
     padding-left: 7px;
 }
 
-
 th, td {
     text-align: center;
     font-size:x-small;
-
-    min-width: 60px;
+/*     min-width: 60px; */
     border: 1px solid #ddd;
     padding: 5px;
 }
-
 
 .week {
     margin: auto;
     text-align: center;
 }
 .period {
-    width: 50px;
+/*     width: 50px; */
     text-align: center;
     font-weight: bold;
 }

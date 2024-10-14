@@ -23,6 +23,7 @@ public class ClassDAO {
                 + "JOIN Department d ON c.department_id = d.department_id "
                 + "LEFT JOIN Course_History ch ON cl.course_id = ch.course_id AND ch.student_id = ? "
                 + "ORDER BY cl.class_id";
+        //class의 속성 조회 쿼리
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 

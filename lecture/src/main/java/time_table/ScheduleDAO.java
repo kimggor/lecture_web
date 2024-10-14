@@ -21,7 +21,6 @@ public class ScheduleDAO {
 			con  =DriverManager.getConnection(url, user, password);
 			if( con != null) System.out.println("db ok");
 			
-			
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -41,26 +40,14 @@ public class ScheduleDAO {
 			}
 		}
 	}
-	
-	
-//// 쿼리문을 통해 Subject 가져오기
-	public Subject loadSubject(String dbTableName) {
-		String sql = "S__Q__L" + dbTableName;	//입력값 활용 SQL문 작성
-		Connection con = dbcon();
-		PreparedStatement pst = null;
-		ResultSet rs = null;
-		
-		Subject subject = new Subject();
-		
-		// 구현중
-		
-		close(rs, pst, con);
-		return subject;
-	}
-	
-	
+
 //// 쿼리문을 통해 테이블에 맞는 !!스케쥴용 SUBJECT 리스트!! 가져오기
 	public ArrayList<Subject> loadSubjectList(String dbTableName) {
+		
+		String selectTable = dbTableName;
+		
+//		String scheduleSql = ""
+		
 		String sql = "S__Q__L" + dbTableName;	//입력값 활용 SQL문 작성
 		Connection con = dbcon();
 		PreparedStatement pst = null;
@@ -74,15 +61,19 @@ public class ScheduleDAO {
 		return list;
 	}
 	
+	// STUDENT: 	STUDENT_ID, NAME, EMAIL, PASSWORD, GRADE, MAJOR, DEPARTMENT_ID
+	// ENROLLMENT:	ENROLLMENT_ID, STUDENT_ID, CLASS_ID, COURSE_ID, GRADE
+	// CLASS:		CLASS_ID, COURSE_ID, PROFESSOR_ID, SEMESTER, ROOM_NO, CAPACITY, ENROLLED, DAY_OF_WEEK, START_TIME, END_TIME
+	// COURSE:		COURSE_ID, COURSE_NAME, DEPARTMENT_ID, CLASSIFICATION, SEMESTER, CREDIT
+	// PROFESSOR:	PROFESSOR_ID, NAME, EMAIL, PASSWORD, DEPARTMENT_ID
 	
-	
-	
-	//(구현)메소드: 과목정보 불러오기 (Class table)
-	
-	//(구현)메소드: 코스정보 불러오기 (Course table)
-	
-	//(구현)메소드: 교수정보 불러오기 (Professor table)
-	
-	//(구현)메소드: 
+	// SUBJECT
+	// (ENROLLMENT.CLASS_ID):	COURSE_ID -> CLASSIFICATION	(EX. PHIL154 - 04)
+	//							COURSE_ID -> COURSE_NAME	(EX. 동양철학입문)
+	//							ROOM_NO						(EX. 교양관210)
+	//							PROFESSOR_ID -> NAME		(EX. 김동진)
+	//							DAY_OF_WEEK					(EX. 월)
+	//							START_TIME					(EX. 11:00)
+	//							END_TIME					(EX. 11:50)
 
 }

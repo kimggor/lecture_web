@@ -16,63 +16,59 @@ public class ScheduleServlet extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
-//// 스케쥴 표를 그리기 위한 데이터(MODEL) 불러오기 (Service > DAO)
+		//// 스케쥴 표를 그리기 위한 데이터(MODEL) 불러오기 (Service > DAO)
 		ScheduleService service = new ScheduleService();
 		
-		//스케쥴 결과용 LIST 선언
-		String enrollDbName = "ENROLL";
-		String cartDbName = "CART";
-		String wishDbName = "WISH";
-		ArrayList<Subject> list_enroll = new ArrayList<>();		// 등록과목
-		ArrayList<Subject> list_cart = new ArrayList<>();		// 선택과목
-		ArrayList<Subject> list_wish = new ArrayList<>();		// 희망과목
+//// 리스트종류 구분을 위한 현재 페이지를 가져오는 기능 추가
 		
-		list_enroll = service.loadSubjectList(enrollDbName);
-		list_cart = service.loadSubjectList(cartDbName);
-		list_wish = service.loadSubjectList(wishDbName);
+		String enrollDbName = "ENROLLMENT";
+		String cartDbName = "COURSE_CART";
+		String wishDbName = "WISHLIST";
+		
+		String dbName = enrollDbName;
+		ArrayList<Subject> list = new ArrayList<>();
+		list = service.loadSubjectList(dbName);	// 서비스구동(MODEL값)
 		
 		
 		
 		
-//// 스케쥴 표 렌더링을 위한 데이터 저장
-//// 렌더용 2차원배열 저장
-		//JSP에서 FOR문을 통한 요일별 1~10교시 출력 준비?
 		
-		// A안
-		int totalWeeks = 6;
-		int totalPeriods = 10;
-		Subject subjects[][] = new Subject[totalPeriods][totalWeeks];
+		// 스케쥴 표 렌더링을 위한 데이터 저장 - 렌더용 2차원배열 저장
+		int totalDays = 6;                                 
+		int totalPeriods = 13;
+		Subject subjects[][] = new Subject[totalDays][totalPeriods];
 		
+		for(Subject subject : list) {
+			
+			// ENROLL리스트의 DAY값과 PERIOD값을 불러와서
+			// 해당 2중배열 위치에 SUBJECT값을 넣기.
+			int day = subject.day;
+			int period = subject.period;
+			
+			subjects[day][period] = subject;	// 스케쥴표 렌더링용 데이터
+		}
 		
-		for(int i=0; i<totalWeeks; i++) {		//요일 (0:MON, 1:TUE, 2:WED, 3:THU, 4:FRI, 5:SAT)
-			for(int j=0; j<totalPeriods; j++) {		//교시 (EX. 1교시, 2교시, ... 10교시)
-				
-				if(subjects[j][i] == null)
-					continue;
+		//test
+		for(int i=0; i<totalDays; i++) {
+			for(int j=0; j<totalPeriods; j++) {
+				subjects[i][j] = new Subject(Integer.toString(i)
+											, Integer.toString(j)
+											, "33"
+											, "33");
 			}
 		}
+		//test
+		subjects[1][1] = null;
+		subjects[2][2] = null;
 		
-		// B안
-		for(Subject subject : list_enroll) {
-			
-		}
-		
-		
-		//메모리 저장
+		// 메모리 저장
 		req.setAttribute("timeTable", subjects);
+		req.setAttribute("day", totalDays);
+		req.setAttribute("period", totalPeriods);
 		
-
-
-//// JSP 호출
+		// JSP 호출
 		RequestDispatcher dispatcher = req.getRequestDispatcher("/WEB-INF/views/timetable/schedule.jsp");
 		dispatcher.forward(req, resp);
-		
-	}
-	
-	public void test() {
-	
-		ScheduleService service = new ScheduleService();
-		
 		
 	}
 
