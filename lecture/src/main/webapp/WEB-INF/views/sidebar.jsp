@@ -191,8 +191,12 @@ body {
                            class="<%=path.equals("/courses") ? "is-active" : ""%>">수강신청</a>
                     </li>
                     <li id="menu_basket">
-                        <a href="<%=contextPath%>/basket"
-                           class="<%=path.equals("/basket") ? "is-active" : ""%>">수강희망/관심과목 등록</a>
+                        <a href="<%=contextPath%>/wishlist"
+                           class="<%=path.equals("/wishlist") ? "is-active" : ""%>">수강희망/관심과목 등록</a>
+                    </li>
+                    <li id="menu_basket">
+                        <a href="<%=contextPath%>/cart"
+                           class="<%=path.equals("/cart") ? "is-active" : ""%>">장바구니</a>
                     </li>
                     <li class="has-child">
                         <a href="#"

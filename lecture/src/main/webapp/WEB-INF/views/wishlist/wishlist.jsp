@@ -80,20 +80,18 @@ th, td {
 th {
     background-color: #f2f2f2;
 }
-/* 사이드바 스타일 */
-/* #sidebar {
-    width: 200px;
-    float: left;
-    border: 1px solid #ddd;
-    padding: 10px;
-    box-sizing: border-box;
-}
- */
+
 /* 콘텐츠 영역 스타일 */
 #content {
     flex-grow: 1;
-    padding: 0 20px 20px 20px;
-    margin-left: 220px;
+    padding:0 20px 20px 20px;
+    margin-left: 250px; /* 사이드바의 너비와 동일하게 설정 */
+    transition: margin-left 0.3s ease; /* 애니메이션을 위한 트랜지션 추가 */
+}
+
+/* 사이드바가 숨겨졌을 때 메인 콘텐츠 영역의 스타일 */
+#content.sidebar-collapsed {
+    margin-left: 0;
 }
 
 /* 강의 목록 테이블을 스크롤리로 만들기 위한 스타일 */
@@ -236,14 +234,27 @@ $(document).ready(function(){
 	});
 	
 });
+function toggleSidebar() {
+    const wrapper = document.querySelector(".wrapper");
+    const menuControl = document.querySelector(".menu-control");
+    const content = document.getElementById("content"); // 메인 콘텐츠 영역 선택
 
+    wrapper.classList.toggle("hide"); // 사이드바 표시/숨김 토글
+    content.classList.toggle("sidebar-collapsed"); // 메인 콘텐츠 영역에 클래스 토글
+
+    if (wrapper.classList.contains("hide")) {
+        menuControl.textContent = "▶"; // 사이드바 닫힘 상태
+    } else {
+        menuControl.textContent = "◀"; // 사이드바 열림 상태
+    }
+}
 </script>
 </head>
 <body>
 
-	<div id="sidebar">
+	
         <%@ include file="/WEB-INF/views/sidebar.jsp" %>
-    </div>
+   
     <div id="content">
   
 	<div>
