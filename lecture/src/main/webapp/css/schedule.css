@@ -1,65 +1,48 @@
-body {
-    /* font-family: Arial, sans-serif; */
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 10px;
-}
-
+/* /* 컨테이너를 Flex 컨테이너로 설정하여 사이드바와 콘텐츠를 나란히 배치
 .container {
-/*     max-width: 500px; */
-    margin: auto;
-    background: white;
-    padding: 5px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
 }
 
-h1 {
-    text-align: center;
-    color: #333;
+콘텐츠 영역 스타일
+#content {
+    flex-grow: 1; 남은 공간을 모두 차지
+    padding: 20px; 원하는 만큼 패딩 추가
 }
 
+테이블 스타일
 table {
     width: 100%;
     border-collapse: collapse;
 }
 
-thead{
-    color: rgb(120, 120, 120);
+thead {
     background-color: rgb(250, 243, 239);
-    height: 3px;
-    border-top: 2px solid rgb(160, 160, 160); /* 위쪽 선을 굵게 설정 */
+    border-top: 2px solid rgb(160, 160, 160);
 }
 
 tbody tr {
     height: 30px;
-    
 }
 
 tbody td {
     color: rgb(150, 150, 150);
     text-align: left;
-    line-height: 0.1;   /*행간 조정*/
-    letter-spacing: 4;  /*자간 조정*/
-    
-    padding: 1px;
-    padding-left: 7px;
+    line-height: 1.2;
+    padding: 5px;
 }
 
 th, td {
     text-align: center;
-    font-size:x-small;
-/*     min-width: 60px; */
+    font-size: small;
     border: 1px solid #ddd;
     padding: 5px;
 }
 
 .week {
-    margin: auto;
     text-align: center;
 }
+
 .period {
-/*     width: 50px; */
     text-align: center;
     font-weight: bold;
 }
@@ -71,3 +54,6 @@ tr:nth-child(even) {
 tr:hover {
     background-color: #ededed;
 }
+
+추가적인 스타일이 필요하다면 여기에 작성하세요
+ */ */
