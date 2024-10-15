@@ -18,6 +18,7 @@ import Model.Department;
 import lecture_list.ClassDAO;
 import lecture_list.CourseDAO;
 import lecture_list.DepartmentDAO;
+import lecture_list.EnrollmentDAO;
 
 @WebServlet("/cart")
 public class CartController extends HttpServlet {
@@ -26,6 +27,7 @@ public class CartController extends HttpServlet {
 	private ClassDAO classDAO;
 	private DepartmentDAO departmentDAO;
 	private CartDAO cartDAO;
+	private EnrollmentDAO enrollmentDAO;
 	
 	@Override
 	public void init() throws ServletException {
@@ -34,6 +36,7 @@ public class CartController extends HttpServlet {
 		classDAO = new ClassDAO();
 		departmentDAO = new DepartmentDAO();
 		cartDAO = new CartDAO();
+		enrollmentDAO = new EnrollmentDAO();
 		
 	}
 	
@@ -54,6 +57,10 @@ public class CartController extends HttpServlet {
 		Map<Integer, Integer> cartList = cartDAO.getCartList(studentId);
 		req.setAttribute("cartList", cartList);
 		
+        // 학생이 이미 신청한 강의의 course_id와 class_id 목록 조회
+        Map<Integer, Integer> enrolledCourses = enrollmentDAO.getEnrolledCourses(studentId);
+        req.setAttribute("enrolledCourses", enrolledCourses);
+		
 		List<Classes> allClasses = classDAO.getAllClasses(studentId);
 		req.setAttribute("allClasses", allClasses);
 		
@@ -67,6 +74,9 @@ public class CartController extends HttpServlet {
 		int currentCredits = cartDAO.getCurrentCredits(studentId);
 		System.out.println("CartController - Current Credits: " + currentCredits);
 		req.setAttribute("currentCredits", currentCredits);
+		
+		int enrolledCredits = enrollmentDAO.getCurrentCredits(studentId);
+		req.setAttribute("enrolledCredits", enrolledCredits);
 		
 		req.getRequestDispatcher("WEB-INF/views/cart/cartList.jsp").forward(req, resp);
 		
