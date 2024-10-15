@@ -7,10 +7,10 @@ public class ScheduleService {
 	
 	ScheduleDAO dao = new ScheduleDAO();
 	
-	public ArrayList<Subject> loadSubjectList(String dbTableName) {
+	public ArrayList<Subject> loadSubjectList(String dbTableName, int studentId) {
 		
 		ArrayList<Subject> list = new ArrayList<>();
-		list = dao.loadSubjectList(dbTableName);
+		list = dao.loadSubjectList(dbTableName, studentId);
 		return list;
 	}
 	// STUDENT: 	STUDENT_ID, NAME, EMAIL, PASSWORD, GRADE, MAJOR, DEPARTMENT_ID

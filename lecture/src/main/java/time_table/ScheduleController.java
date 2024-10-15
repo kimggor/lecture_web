@@ -9,6 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 @WebServlet("/schedule")
 public class ScheduleController extends HttpServlet {
@@ -27,8 +28,18 @@ public class ScheduleController extends HttpServlet {
 		
 		String dbName = enrollDbName;	// 가데이터 
 		
+        // 세션에서 student_id 가져오기 (로그인 구현 필요)
+        HttpSession session = req.getSession(false);
+        if (session == null || session.getAttribute("student_id") == null) {
+            // 로그인 페이지로 리다이렉트
+            resp.sendRedirect(req.getContextPath() + "/login");
+            return;
+        }
+
+        int studentId = (int) session.getAttribute("student_id");
+		
 		ArrayList<Subject> list = new ArrayList<>();
-		list = service.loadSubjectList(dbName);	// 서비스구동(MODEL값)
+		list = service.loadSubjectList(dbName, studentId);	// 서비스구동(MODEL값)
 		System.out.println("Loaded subjects count: " + list.size() );
 		
 		// 스케쥴 표 렌더링을 위한 데이터 저장 - 렌더용 2차원배열 저장
