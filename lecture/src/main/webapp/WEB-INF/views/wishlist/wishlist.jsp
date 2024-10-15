@@ -461,7 +461,7 @@ String endTime = wishClass.getEndTime();
 } else {
 %>
 <tr>
-<td conspan="13">등록된 강의가 없습니다.</td>
+<td colspan="13">등록된 강의가 없습니다.</td>
 </tr>
 <%
 }

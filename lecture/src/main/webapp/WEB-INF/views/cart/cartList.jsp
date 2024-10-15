@@ -137,6 +137,7 @@ $(document).ready(function(){
         });
     });
 	
+    // 전체 강의 목록에서 등록 버튼 클릭 시
 	$("#courseTable").on("click", ".btn-action", function(){
 		var courseId = $(this).data("course-id");
 		var classId = $(this).data("class-id");
@@ -157,7 +158,17 @@ $(document).ready(function(){
 				if(response.status === "success"){
 					alert("강의 등록이 완료되었습니다.");
 					
+					var isEnrolled = $('#enrolledTable button.btn-action[data-course-id="' + courseId + '"][data-class-id="' + classId + '"]').length > 0;
+					
+					var enrollBtn;
+					if(isEnrolled){
+						enrollBtn = '<td><button type="button" class="btn btn-action btn-enroll btn-disabled" data-class-id="' + response.classId + '" data-course-id="' + response.courseId + '" disabled>신청 완료</button></td>';
+					} else{
+						enrollBtn = '<td><button type="button" class="btn btn-action btn-enroll" data-class-id="' + response.classId + '" data-course-id="' + response.courseId + '">신청</button></td>';
+					}
+					
 					var newRow = '<tr id="enrolled-row-' + response.classId + '">'
+							   + enrollBtn
 							   + '<td><button type="button" class="btn btn-delete btn-action" data-class-id="' + response.classId + '" data-course-id="' + response.courseId + '">삭제</button></td>'
 							   + '<td>' + response.courseId + '</td>'
                                + '<td>' + response.courseName + '</td>'
@@ -196,6 +207,8 @@ $(document).ready(function(){
 		});
 	});
 	
+	
+	// 장바구니에서 삭제 버튼 클릭 시
 	$("#cartListTable").on("click", ".btn-delete", function(){
 		var courseId = $(this).data("course-id");
 		var classId = $(this).data("class-id");
@@ -216,9 +229,9 @@ $(document).ready(function(){
 				if(response.status === "unenroll_success"){
 					alert("강의 등록이 취소되었습니다.");
 					
-					$("#enrolled-row-" + response.classId).remove();
+					$("#cartListTable #enrolled-row-" + response.classId).remove();
 					
-					$('button.btn-action[data-class-id="' + classId + '"][data-course-id="' + courseId + '"]')
+					$('#courseTable button.btn-action[data-class-id="' + classId + '"][data-course-id="' + courseId + '"]')
 						.removeClass("btn-disabled")
 						.attr("disabled", false)
 						.text("등록");
@@ -236,6 +249,142 @@ $(document).ready(function(){
 			}
 		});
 	});
+	
+	// 장바구니에서 신청 버튼 클릭 시
+	$("#cartListTable").on("click", ".btn-enroll", function(){
+		var courseId = $(this).data("course-id");
+		var classId = $(this).data("class-id");
+		var button = $(this);
+		var row = button.closest("tr");
+		
+        // 비활성화된 버튼은 클릭하지 않도록 추가
+        if ($(this).hasClass('btn-disabled')) {
+            return;
+        }
+		
+		
+		$.ajax({
+			url: "<%= request.getContextPath() %>/enrollAjax",
+			type: "post",
+			data: { courseId: courseId, classId: classId },
+			dataType: "json",
+			success: function(response){
+				console.log("Enroll Response: ", response);
+				if(response.status === "success"){
+					alert('강의 신청이 완료되었습니다.');
+					
+                    // "신청된 강의" 테이블에 추가
+                    var newRow = '<tr id="enrolled-row-' + response.classId + '">'
+                               + '<td><button type="button" class="btn btn-delete btn-action" data-course-id="' + response.courseId + '" data-class-id="' + response.classId + '">삭제</button></td>'
+                               + '<td>' + response.courseId + '</td>'
+                               + '<td>' + response.courseName + '</td>'
+                               + '<td>' + response.departmentName + '</td>'
+                               + '<td>' + response.classification + '</td>'
+                               + '<td>' + response.courseSemester + '</td>'
+                               + '<td>' + response.credit + '</td>'
+                               + '<td>' + response.professorName + ' 교수</td>'
+                               + '<td>' + response.roomNo + '</td>'
+                               + '<td>' + response.dayOfWeek + '(' + (response.startTime == response.endTime ? response.startTime : response.startTime + '-' + response.endTime) + ')' + '</td>'
+                               + '<td>' + (response.isRetake ? '예' : '아니오') + '</td>'
+                               + '<td>' + response.capacity + '</td>'
+                               + '<td>' + response.enrolled + '</td>'
+                               + '</tr>';
+                    $("#enrolledTable tbody").append(newRow);
+					
+                    // "장바구니" 테이블의 신청 인원 업데이트,EnrollAjaxServlet에서 property로 전달한 update인원수를 받아와 html로 응답
+                    row.find('td:nth-child(13)').text(response.enrolled); // 13번째 컬럼: 신청 인원
+                    
+                    // "강의 목록" 테이블의 신청 인원 업데이트
+                    $('#courseTable button.btn-action[data-course-id="' + courseId + '"][data-class-id="' + classId + '"]')
+                        .closest('tr')
+                        .find('td:nth-child(12)') // 12번째 컬럼: 신청 인원
+                        .text(response.enrolled);
+                    
+                    button.addClass("btn-disabled");
+                    button.attr("disabled", true);
+                    button.text("신청 완료");
+                    
+                    // 현재 수강 학점 업데이트
+                    $("#enrolledCredits").text("현재 수강 학점: " + response.currentCredits + "학점");
+				} else if(response.status === "already_enrolled"){
+					alert("이미 신청한 강좌입니다.");
+				} else if(response.status === "class_full"){
+					alert("해당 강의는 마감되었습니다.");
+				} else if(response.status === "exceed_max_credit"){
+					alert("최대 수강 가능 학점인 18학점을 초과할 수 없습니다.");
+				} else if(response.status === "time_conflict"){
+					alert("강의 시간이 중복되어 신청할 수 없습니다.");
+				} else{
+					alert("강의 신청에 실패했습니다. 다시 시도해주세요.");
+				}
+			},
+			error: function(xhr, status, error){
+				console.log("AJAX Error:", status, error);
+				alert("강의 신청 중 오류가 발생했습니다.");
+			}
+		});
+	});
+	
+    // "신청된 강의" 테이블의 삭제 버튼 클릭 시 AJAX 요청
+    $("#enrolledTable").on("click", ".btn-delete", function() {
+        var courseId = $(this).data("course-id");
+        var classId = $(this).data("class-id");
+        var button = $(this);
+        var row = button.closest('tr');
+
+        if(!confirm('정말로 신청을 취소하시겠습니까?')) {
+            return;
+        }
+
+        $.ajax({
+            url: '<%=request.getContextPath()%>/unenrollAjax',
+            type: 'POST',
+            data: {
+                courseId: courseId,
+                classId: classId
+            },
+            dataType: 'json',
+            success: function(response) {
+                console.log("Unenroll Response:", response); // 디버깅용 로그
+                if(response.status === 'unenroll_success') {
+                    // 취소 완료 메시지 표시 (alert 대신 메시지 영역 활용 권장)
+                    alert('강의 신청이 취소되었습니다.');
+
+                    // "신청된 강의" 테이블에서 해당 행 제거
+                    $("#enrolledTable #enrolled-row-" + response.classId).remove();
+
+                    // "강의 목록" 테이블의 신청 인원 업데이트
+                    $('#courseTable button.btn-action[data-course-id="' + courseId + '"][data-class-id="' + classId + '"]')
+                        .closest('tr')
+                        .find('td:nth-child(12)') // 12번째 컬럼: 신청 인원
+                        .text(response.enrolled);
+                    
+                    // "장바구니" 테이블의 신청 인원 업데이트
+                    $('#cartListTable button.btn-action[data-course-id="' + courseId + '"][data-class-id="' + classId + '"]')
+                    	.closest('tr')
+                    	.find('td:nth-child(13)') // 13번째 컬럼: 신청 인원
+                    	.text(response.enrolled);
+
+                    // "장바구니" 테이블의 신청 버튼 활성화 및 텍스트 변경
+                    $('#cartListTable button.btn-enroll[data-course-id="' + courseId + '"][data-class-id="' + classId + '"]')
+                        .removeClass('btn-disabled')
+                        .attr('disabled', false)
+                        .text('신청');
+
+                    // 현재 수강 학점 업데이트
+                    $("#enrolledCredits").text("현재 수강 학점: " + response.currentCredits + "학점");
+                } else if(response.status === 'unenroll_fail') {
+                    alert('강의 취소에 실패했습니다. 다시 시도해주세요.');
+                } else {
+                    alert('강의 취소 중 오류가 발생했습니다.');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                alert('강의 취소 중 오류가 발생했습니다.');
+            }
+        });
+    });
 	
 });
 function toggleSidebar() {
@@ -266,22 +415,6 @@ function toggleSidebar() {
 	</div>
 
     <h1 style="text-align: center;">강의 목록</h1>
-
-<!-- 현재 수강 학점 표시 -->
-<div style="text-align: center; margin-bottom: 20px;">
-<span id="currentCredits">
-현재 등록 학점: 
-<%
-Integer credits = (Integer)request.getAttribute("currentCredits");
-if (credits != null){
-	out.print(credits);
-} else{
-	out.print("0");
-}
-%>
-학점
-</span>
-</div>
 
     <!-- 필터링 세션 추가 -->
     <div style="text-align: center; margin-bottom: 20px;">
@@ -347,6 +480,7 @@ if (credits != null){
 <%
 List<Classes> allClasses = (List<Classes>)request.getAttribute("allClasses");
 Map<Integer, Integer> cartList = (Map<Integer, Integer>)request.getAttribute("cartList");
+Map<Integer, Integer> enrolledCourses = (Map<Integer, Integer>) request.getAttribute("enrolledCourses");
 
 if (allClasses != null && !allClasses.isEmpty()) {
 	for (Classes classEntity : allClasses) {
@@ -396,12 +530,28 @@ String endTime = classEntity.getEndTime();
 </table>
 </div>
 
-<!-- 신청된 강의를 별도로 표시 -->
+<!-- 장바구니에 등록된 강의를 별도로 표시 -->
 <h2 style="text-align: center; margin-top: 40px;">장바구니</h2>
+<!-- 현재 등록 학점 표시 -->
+<div style="text-align: center; margin-bottom: 20px;">
+<span id="currentCredits">
+현재 등록 학점: 
+<%
+Integer credits = (Integer)request.getAttribute("currentCredits");
+if (credits != null){
+	out.print(credits);
+} else{
+	out.print("0");
+}
+%>
+학점
+</span>
+</div>
 <table id="cartListTable">
 
 <thead>
 <tr>
+<th>신청</th>
 <th>삭제</th>
 <th>Course ID</th>
 <th>강의명</th>
@@ -437,6 +587,15 @@ if (cartList != null && !cartList.isEmpty()) {
 %>
 <tr id="enrolled-row-<%= cartClass.getClassId() %>">
 <td>
+<% if(enrolledCourses.containsKey(courseId) && enrolledCourses.get(courseId) == classId){ %>
+<button type="button" class="btn btn-action btn-enroll btn-disabled" data-course-id="<%= courseId %>" data-class-id="<%= classId %>" disabled>신청 완료</button>
+<% } else if(cartClass.getEnrolled() < cartClass.getCapacity()) { %>
+<button type="button" class="btn btn-action btn-enroll" data-course-id="<%= courseId %>" data-class-id="<%= classId %>">신청</button>
+<% } else { %>
+<button type="button" class="btn btn-disabled" data-course-id="<%= courseId %>" data-class-id="<%= classId %>" disabled>마감</button>
+<% } %>
+</td>
+<td>
 <button type="button" class="btn btn-delete btn-action" data-course-id="<%= courseId %>" data-class-id="<%= classId %>">삭제</button>
 </td>
 <td><%= cartClass.getCourseId() %></td>
@@ -465,7 +624,7 @@ String endTime = cartClass.getEndTime();
 } else {
 %>
 <tr>
-<td colspan="13">등록된 강의가 없습니다.</td>
+<td colspan="14">등록된 강의가 없습니다.</td>
 </tr>
 <%
 }
@@ -473,6 +632,98 @@ String endTime = cartClass.getEndTime();
 </tbody>
 
 </table>
+
+    <!-- 신청된 강의를 별도로 표시 -->
+    <h2 style="text-align: center; margin-top: 40px;">신청된 강의</h2>
+    <!-- 현재 수강 학점 표시 -->
+	<div style="text-align: center; margin-bottom: 20px;">
+	<span id="enrolledCredits">
+	현재 수강 학점: 
+	<%
+	Integer enrolledCredits = (Integer)request.getAttribute("enrolledCredits");
+	if (enrolledCredits != null){
+		out.print(enrolledCredits);
+	} else{
+		out.print("0");
+	}
+	%>
+	학점
+	</span>
+	</div>
+    <table id="enrolledTable">
+        <thead>
+            <tr>
+                <th>삭제</th>
+                <th>Course ID</th>
+                <th>강의명</th>
+                <th>학과 이름</th>
+                <th>분류</th>
+                <th>학기</th>
+                <th>학점</th>
+                <th>교수명</th>
+                <th>강의실</th>
+                <th>시간</th>
+                <th>재수강 여부</th>
+                <th>정원</th>
+                <th>신청 인원</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%
+                if (enrolledCourses != null && !enrolledCourses.isEmpty()) {
+                    for (Map.Entry<Integer, Integer> entry : enrolledCourses.entrySet()) {
+                        int courseId = entry.getKey();
+                        int classId = entry.getValue();
+                        Classes enrolledClass = null;
+
+                        // enrolledCourses는 courseId와 classId의 맵
+                        for (Classes classEntity : allClasses) {
+                            if (classEntity.getCourseId() == courseId && classEntity.getClassId() == classId) {
+                                enrolledClass = classEntity;
+                                break;
+                            }
+                        }
+
+                        if (enrolledClass != null) {
+            %>
+            <tr id="enrolled-row-<%=enrolledClass.getClassId()%>">
+                <td>
+                    <!-- 삭제 버튼 -->
+                    <button type="button" class="btn btn-delete btn-action" data-course-id="<%=enrolledClass.getCourseId()%>" data-class-id="<%=enrolledClass.getClassId()%>">삭제</button>
+                </td>
+                <td><%=enrolledClass.getCourseId()%></td>
+                <td><%=enrolledClass.getCourseName()%></td>
+                <td><%=enrolledClass.getDepartmentName()%></td>
+                <td><%=enrolledClass.getClassification()%></td>
+                <td><%=enrolledClass.getCourseSemester()%></td>
+                <td><%=enrolledClass.getCredit()%></td>
+                <td><%=enrolledClass.getProfessorName()%> 교수</td>
+                <td><%=enrolledClass.getRoomNo()%></td>
+                <td>
+                	<%
+					String dayOfWeek = enrolledClass.getDayOfWeek();
+					String startTime = enrolledClass.getStartTime();
+					String endTime = enrolledClass.getEndTime();
+					%>
+					<%= startTime.equals(endTime) ? dayOfWeek + "(" + startTime + ")" : dayOfWeek + "(" + startTime + "-" + endTime + ")" %>
+                </td>
+                <td><%=enrolledClass.getIsRetake() ? "예" : "아니오" %></td>
+                <td><%=enrolledClass.getCapacity()%></td>
+                <td><%=enrolledClass.getEnrolled()%></td>
+            </tr>
+            <%
+                        }
+                    }
+                } else {
+            %>
+            <tr>
+                <td colspan="13">신청된 강의가 없습니다.</td>
+            </tr>
+            <%
+                }
+            %>
+        </tbody>
+    </table>
 
 </body>
 </html>
