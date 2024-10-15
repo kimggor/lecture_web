@@ -53,7 +53,7 @@ public class ScheduleDAO {
 	}
 
 //// 쿼리문을 통해 테이블에 맞는 !!스케쥴용 SUBJECT 리스트!! 가져오기
-	public ArrayList<Subject> loadSubjectList(String dbTableName) {
+	public ArrayList<Subject> loadSubjectList(String dbTableName, int studentId) {
 		
 		String selectTable = dbTableName;
 		
@@ -70,7 +70,8 @@ public class ScheduleDAO {
 		           + "JOIN Professor p ON c.professor_id = p.professor_id "
 		           + "JOIN Course co ON e.course_id = co.course_id "
 		           + "WHERE e.class_id = c.class_id "
-		           + "AND e.course_id = co.course_id;";
+		           + "AND e.course_id = co.course_id "
+		           + "AND e.student_id = ?";
 		
 		ArrayList<Subject> list = new ArrayList<Subject>();
 		
@@ -81,6 +82,7 @@ public class ScheduleDAO {
 		try {
 			con = dbcon();
 			pst = con.prepareStatement(sql);
+			pst.setInt(1, studentId);
 			rs = pst.executeQuery();
 			
 			while(rs.next()) {
@@ -138,5 +140,10 @@ private int getDayOfWeek(String day) {
 	//							DAY_OF_WEEK					(EX. 월)
 	//							START_TIME					(EX. 11:00)
 	//							END_TIME					(EX. 11:50)
+
+//public static void main(String[] args) {
+//	ScheduleDAO dao = new ScheduleDAO();
+//	dao.loadSubjectList("ENROLLMENT", 1);
+//}
 
 }
