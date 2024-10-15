@@ -1,7 +1,6 @@
 package time_table;
 
 import java.sql.Date;
-import java.sql.Time;
 import java.util.ArrayList;
 
 public class ScheduleService {
@@ -11,7 +10,7 @@ public class ScheduleService {
 	public ArrayList<Subject> loadSubjectList(String dbTableName) {
 		
 		ArrayList<Subject> list = new ArrayList<>();
-		dao.loadSubjectList(dbTableName);
+		list = dao.loadSubjectList(dbTableName);
 		return list;
 	}
 	// STUDENT: 	STUDENT_ID, NAME, EMAIL, PASSWORD, GRADE, MAJOR, DEPARTMENT_ID
@@ -47,7 +46,7 @@ public class ScheduleService {
 		case 17: return 8;
 		case 18: return 9;	// 10교시
 		default:
-			return 999;
+			return -1;
 		}
 	}
 	
