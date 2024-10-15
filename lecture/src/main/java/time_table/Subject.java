@@ -7,8 +7,8 @@ public class Subject {
 	public String courseName;			// 과정이름
 	public String roomNumber;			// 강의실
 	public String proffessorName;		// 교수이름
-	public int startTime;
-	public int endTime;
+	public String startTime;
+	public String endTime;
 	
 	public int day;				// 2차원배열 구분용: 0 -> MONDAY
 	public int period;			// 2차원배열 구분용: 0 -> 1교시
