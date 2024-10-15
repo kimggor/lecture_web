@@ -36,7 +36,7 @@
 					<td class="period"><%= j + 1 %></td>
 					<% for (int i = 0; i < day; i++) { %>
 					<% if (subjects[i][j] == null) { %>
-					<td style="background-color: pink">
+					<td>
 						<%
 						continue;
 						} else {
@@ -51,7 +51,6 @@
 					<% } %>
 				</tr>
 				<% } %>
-
 			</tbody>
 		</table>
 	</div>
