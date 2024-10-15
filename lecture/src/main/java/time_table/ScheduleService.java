@@ -29,10 +29,10 @@ public class ScheduleService {
 		//							END_TIME					(EX. 11:50)
 		
 //// TIME자료형을 PERIOD 구간용 INT로 계산
-	public int calcPeriod(Date startTime, Date endTime) {
+	public int calcPeriod(String startTime, String endTime) {
 		
-		int startHour = startTime.getHours();	// 시작시간(Hour)
-		int endHour = endTime.getHours();		// 종료시간(Hour)
+		int startHour = Integer.parseInt(startTime);	// 시작시간(Hour)
+		int endHour = Integer.parseInt(endTime);		// 종료시간(Hour)
 		
 		switch(startHour) {
 		case 9: return 0;	// 1교시
