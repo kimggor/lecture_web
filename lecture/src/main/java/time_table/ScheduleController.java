@@ -39,20 +39,29 @@ public class ScheduleController extends HttpServlet {
 
             // 시작시간에서 시간 부분만 추출하여 정수로 변환
             String startTime = subject.startTime;
-            int startHour = Integer.parseInt(startTime.split(":")[0]);
+            int startHour = Integer.parseInt(startTime) - 1;
+            
+            String endTime = subject.endTime;
+            int endHour = Integer.parseInt(endTime) - 1;
 
             // 필요에 따라 period 계산 방식 조정
-            int period = subject.period = startHour - 9; // 9시부터 시작하면 0번째 인덱스
+//            int period = subject.period = startHour - 9; // 9시부터 시작하면 0번째 인덱스
+//            
+//            int endPeriod = endHour - 9;
 
             System.out.println("day: " + day);
-            System.out.println("period: " + period);
+            System.out.println("period: " + startHour);
+            System.out.println("end period: " + endHour);
 
-            if (day < 0 || day >= totalDays || period < 0 || period >= totalPeriods) {
-                System.out.println("Invalid day/period: " + day + "/" + period);
+            if (day < 0 || day >= totalDays || startHour < 0 || startHour >= totalPeriods || endHour < 0 || endHour >= totalPeriods) {
+                System.out.println("Invalid day/period: " + day + "/" + startHour);
                 continue; // 잘못된 인덱스일 경우 skip
             }
 
-            subjects[day][period] = subject; // 스케쥴표 렌더링용 데이터
+            // subjects[day][period] = subject; // 스케쥴표 렌더링용 데이터
+            for(int i=startHour; i<=endHour; i++) {
+            	subjects[day][i] = subject;
+            }
         }
 
         // 메모리 저장
